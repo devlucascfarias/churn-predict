@@ -1,3 +1,16 @@
+"""
+Churn Modeling Script
+
+This script handles the entire training pipeline for the Churn prediction model.
+It performs:
+1. Loading training and testing data.
+2. Preprocessing (cleaning, encoding, and normalization).
+3. Training a Random Forest Classifier.
+4. Model evaluation (Accuracy, Confusion Matrix, Feature Importance).
+5. Persistence of the model and auxiliary objects (scalers, encoders).
+6. Generating predictions for the test set.
+"""
+
 import pandas as pd
 import numpy as np
 import joblib
@@ -15,6 +28,21 @@ sns.set_theme(style="whitegrid")
 DROP_FEATURES = ['CustomerID', 'Support Calls', 'Total Spend']
 
 def preprocess_data(df, is_train=True, label_encoders=None, scaler=None, drop_cols=None):
+    """
+    Performs data preprocessing (Cleaning, Encoding, Scaling).
+
+    Args:
+        df (pd.DataFrame): Original DataFrame.
+        is_train (bool): If True, fits the encoders and scaler. If False, only transforms.
+        label_encoders (dict, optional): Dictionary of fitted encoders (used when is_train=False).
+        scaler (StandardScaler, optional): Fitted scaler (used when is_train=False).
+        drop_cols (list, optional): Additional list of columns to remove.
+
+    Returns:
+        tuple or pd.DataFrame:
+            - If is_train=True: Returns (df_processed, label_encoders, scaler, numeric_cols).
+            - If is_train=False: Returns only df_processed.
+    """
     df_processed = df.copy()
     
     if drop_cols:
@@ -55,6 +83,16 @@ def preprocess_data(df, is_train=True, label_encoders=None, scaler=None, drop_co
         return df_processed
 
 if __name__ == "__main__":
+    """
+    Main Execution Block
+    
+    1. Loads datasets.
+    2. Applies preprocessing.
+    3. Trains Random Forest model.
+    4. Evaluates performance on validation.
+    5. Saves artifacts (model and transformers).
+    6. Generates test submission.
+    """
 
     train_path = 'data/customer_churn_dataset-training-master.csv'
     test_path = 'data/customer_churn_dataset-testing-master.csv'
@@ -62,42 +100,34 @@ if __name__ == "__main__":
     df_train = pd.read_csv(train_path)
     df_test = pd.read_csv(test_path)
 
-    print(f"Shapes Iniciais: Treino {df_train.shape}, Teste {df_test.shape}")
+    print(f"Initial Shapes: Train {df_train.shape}, Test {df_test.shape}")
 
     df_train_proc, encoders, scaler, num_features = preprocess_data(df_train, is_train=True)
 
     X = df_train_proc.drop('Churn', axis=1)
     y = df_train_proc['Churn']
 
-    # Validation Split
-
     X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
 
-    # Train
-
-    print("Treinando Random Forest...")
+    print("Training Random Forest...")
     rf_model = RandomForestClassifier(n_estimators=100, max_depth=10, random_state=42, n_jobs=-1)
     rf_model.fit(X_train, y_train)
-
-    # Validation
 
     y_pred_val = rf_model.predict(X_val)
     acc = accuracy_score(y_val, y_pred_val)
 
-    print(f"\nAcurácia de Validação: {acc:.4f}")
-    print("\nRelatório de Classificação:\n", classification_report(y_val, y_pred_val))
+    print(f"\nValidation Accuracy: {acc:.4f}")
+    print("\nClassification Report:\n", classification_report(y_val, y_pred_val))
 
     fig, ax = plt.subplots(1, 2, figsize=(15, 5))
     ConfusionMatrixDisplay.from_predictions(y_val, y_pred_val, ax=ax[0], cmap='Blues')
-    ax[0].set_title('Matriz de Confusão')
+    ax[0].set_title('Confusion Matrix')
 
     importances = pd.Series(rf_model.feature_importances_, index=X.columns).sort_values(ascending=True)
     importances.plot(kind='barh', ax=ax[1])
-    ax[1].set_title('Importância das Variáveis')
+    ax[1].set_title('Feature Importance')
     plt.tight_layout()
     plt.show()
-
-    # Save Model and Support Objects
     
     joblib.dump(rf_model, 'data/churn_model.pkl')
     joblib.dump(encoders, 'data/encoders.pkl')
@@ -105,13 +135,11 @@ if __name__ == "__main__":
     
     with open('data/metrics.json', 'w') as f:
         json.dump({'accuracy': acc}, f)
-
-    # Test Prediction
     
     X_test_raw = df_test.drop('Churn', axis=1) if 'Churn' in df_test.columns else df_test
     df_test_proc = preprocess_data(X_test_raw, is_train=False, label_encoders=encoders, scaler=scaler)
     
-    print("\nGerando predições para o arquivo de teste...")
+    print("\nGenerating predictions for test file...")
     test_preds = rf_model.predict(df_test_proc)
     
     submission = pd.DataFrame({
@@ -119,4 +147,4 @@ if __name__ == "__main__":
         'Churn_Prediction': test_preds
     })
     submission.to_csv('data/churn_predictions.csv', index=False)
-    print("Processo concluído com sucesso!")
+    print("Process completed successfully!")

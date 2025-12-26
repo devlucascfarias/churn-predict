@@ -5,10 +5,30 @@ import plotly.express as px
 import churn_model
 import json
 
+"""
+Churn Prediction Dashboard
+
+This Streamlit application provides an interactive interface for:
+1. Real-time Churn Prediction: Users can input customer data to get immediate predictions.
+2. Dataset Insights: Visualization of customer demographics and churn correlations.
+3. Model Training Info: Displaying model parameters, metrics, and training data samples.
+4. Model Report: Detailed report on model development, data leakage, and robustness tests.
+"""
+
 st.set_page_config(page_title="Churn Prediction", layout="wide")
 
 @st.cache_resource
 def load_resources():
+    """
+    Loads and caches key resources to improve dashboard performance.
+    
+    Returns:
+        tuple: (model, train_df, encoders, scaler)
+            - model: Trained Random Forest model.
+            - train_df: Training dataset (pandas DataFrame).
+            - encoders: Dictionary of fitted LabelEncoders.
+            - scaler: Fitted StandardScaler.
+    """
     model = joblib.load('data/churn_model.pkl')
     try:
         train_df = pd.read_csv('data/customer_churn_dataset-training-master.csv')
@@ -28,6 +48,10 @@ st.title("Churn Prediction Dashboard")
 tab1, tab2, tab3, tab4 = st.tabs(["Prediction", "Insights", "Train", "Model Report"])
 
 with tab1:
+    """
+    Tab 1: Prediction
+    Allows the user to input data via widgets and receive a real-time Churn probability.
+    """
     st.header("Real-time Prediction")
     st.markdown("Enter customer details to predict churn probability.")
     
@@ -81,6 +105,11 @@ with tab1:
             st.error(f"Error: {e}")
 
 with tab2:
+    """
+    Tab 2: Insights
+    Provides interactive visualizations (Pie Charts, Histograms, Heatmaps) to explore the dataset
+    and understand factors influencing Churn.
+    """
     st.header("Dataset Insights")
     
     st.markdown("Use the filters below to explore specific segments.")

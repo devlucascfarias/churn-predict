@@ -2,6 +2,8 @@
 
 A Machine Learning application to predict customer **Churn** (cancellation probability). Includes an interactive [Streamlit](https://streamlit.io/) dashboard and a training script.
 
+**Live Demo:** [https://churn-predict-model.streamlit.app/](https://churn-predict-model.streamlit.app/)
+
 ## Features
 
 - **Real-Time Prediction:** Input customer data and get instant churn probabilities.

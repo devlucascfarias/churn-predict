@@ -1,0 +1,9 @@
+# Python
+__pycache__/
+*.pyc
+
+# Data (Optional - remove if you want to commit data)
+# data/*.csv
+
+# Streamlit
+.streamlit/

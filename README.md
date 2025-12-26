@@ -22,7 +22,7 @@ A Machine Learning application to predict customer **Churn** (cancellation proba
 ### 1. Install Dependencies
 
 ```bash
-pip install streamlit pandas numpy scikit-learn plotly matplotlib seaborn joblib
+pip install -r requirements.txt
 ```
 
 ### 2. Run Dashboard

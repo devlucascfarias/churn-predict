@@ -1,65 +1,46 @@
 # Churn Predict
 
-Este projeto é uma aplicação de Machine Learning para prever a probabilidade de **Churn** (cancelamento) de clientes. Ele inclui um dashboard interativo desenvolvido com [Streamlit](https://streamlit.io/) e um script de modelagem para treinar e avaliar o modelo.
+A Machine Learning application to predict customer **Churn** (cancellation probability). Includes an interactive [Streamlit](https://streamlit.io/) dashboard and a training script.
 
-## 📋 Funcionalidades
+## Features
 
-- **Previsão em Tempo Real:** Insira os dados de um cliente (idade, gênero, contrato, etc.) e receba a probabilidade de churn instantaneamente.
-- **Insights do Dataset:** Visualize distribuições de dados, correlações e analise o comportamento dos clientes através de filtros interativos.
-- **Relatório do Modelo:** Detalhes sobre o desempenho do modelo, detecção de *data leakage* e testes de robustez.
-- **Treinamento Automatizado:** Script para pré-processamento, treinamento (Random Forest) e avaliação do modelo.
+- **Real-Time Prediction:** Input customer data and get instant churn probabilities.
+- **Dataset Insights:** Visualize distributions, correlations, and customer behavior.
+- **Model Report:** Performance metrics and robustness tests.
+- **Automated Training:** Script for preprocessing, training (Random Forest), and evaluation.
 
-## 🛠️ Tecnologias Utilizadas
+## Tech Stack
 
 - **Python 3**
-- **Streamlit** (Dashboard Web)
-- **Scikit-learn** (Modelagem e Pré-processamento)
-- **Pandas & NumPy** (Manipulação de Dados)
-- **Plotly, Matplotlib & Seaborn** (Visualização de Dados)
-- **Joblib** (Persistência do Modelo)
+- **Streamlit** (Web Dashboard)
+- **Scikit-learn** (Modeling)
+- **Pandas & NumPy** (Data Manipulation)
+- **Plotly, Matplotlib & Seaborn** (Visualization)
 
-## 🚀 Como Executar
-
-### 1. Instalação das Dependências
-
-Certifique-se de ter o Python instalado. É recomendado usar um ambiente virtual. Instale as bibliotecas necessárias:
+### 1. Install Dependencies
 
 ```bash
 pip install streamlit pandas numpy scikit-learn plotly matplotlib seaborn joblib
 ```
 
-### 2. Executar o Dashboard (App)
-
-Para iniciar a interface web interativa:
+### 2. Run Dashboard
 
 ```bash
 streamlit run app.py
 ```
 
-O dashboard abrirá automaticamente no seu navegador.
-
-### 3. Treinar o Modelo (Opcional)
-
-Se desejar retreinar o modelo com os dados atuais em `data/`:
+### 3. Train Model (Optional)
 
 ```bash
 python churn_model.py
 ```
 
-Isso irá gerar novos arquivos de modelo (`.pkl`), métricas e previsões na pasta `data/`.
+## Structure
 
-## 📂 Estrutura do Projeto
+- `app.py`: Main Streamlit dashboard.
+- `churn_model.py`: Training and preprocessing script.
+- `data/`: Contains datasets, saved models (`.pkl`), and metrics.
 
-- `app.py`: Código principal da aplicação Streamlit.
-- `churn_model.py`: Script responsável pelo treinamento do modelo Random Forest, pré-processamento e geração de arquivos auxiliares.
-- `data/`:
-    - `customer_churn_dataset-training-master.csv`: Dados de treino.
-    - `customer_churn_dataset-testing-master.csv`: Dados de teste.
-    - `churn_model.pkl`: Modelo treinado salvo.
-    - `encoders.pkl` & `scaler.pkl`: Objetos de pré-processamento salvos.
-    - `metrics.json`: Métricas de desempenho do treino.
-    - `churn_predictions.csv`: Previsões geradas pelo script de modelagem.
+## About the Model
 
-## 📊 Sobre o Modelo
-
-O modelo utiliza um **Random Forest Classifier**. Durante o desenvolvimento, foram identificados e tratados problemas de *Data Leakage* relacionados às variáveis "Support Calls" e "Total Spend", resultando em um modelo final robusto com cerca de **90% de acurácia**, focado na generalização para novos clientes.
+Uses a **Random Forest Classifier**. Developed with a focus on generalization, addressing initial data leakage issues to achieve an accuracy of approximately **90%**.
